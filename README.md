@@ -45,7 +45,7 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 3. Description: "Connect ChatGPT to a live browser session via Webfuse"
 4. Copy the system prompt from `gpt-config.md`
 5. Add MCP connector:
-   - Server URL: `https://session-mcp.YOUR_HOSTNAME/mcp`
+   - Server URL: `https://session-mcp.webfu.se/mcp`
    - Auth: Bearer token with your REST API key
 
 ### 3. Use It

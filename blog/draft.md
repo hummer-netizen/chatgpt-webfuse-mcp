@@ -67,7 +67,7 @@ Go to Webfuse Studio. Create a Space. This is your proxy configuration. Generate
 In ChatGPT, create a new GPT. Add an MCP connector pointing to:
 
 ```
-https://session-mcp.YOUR_HOSTNAME/mcp
+https://session-mcp.webfu.se/mcp
 ```
 
 Authenticate with your REST API key as a Bearer token. Add a system prompt that tells the GPT how to use the tools (snapshot first, then act, then verify).

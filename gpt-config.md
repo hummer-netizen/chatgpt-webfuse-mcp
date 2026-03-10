@@ -41,7 +41,7 @@ You are NOT browsing in a separate browser. You are controlling the same session
 
 ## MCP Server Configuration
 
-Server URL: https://session-mcp.{user_hostname}/mcp
+Server URL: https://session-mcp.webfu.se/mcp
 Authentication: Bearer token (user's Space REST API key)
 Transport: Streamable HTTP
 
