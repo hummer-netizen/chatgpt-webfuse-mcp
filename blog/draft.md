@@ -6,14 +6,11 @@ created: 2026-03-10
 category: ai-agents
 authorId: nicholas-piel
 tags: ["chatgpt", "mcp", "browser-automation", "webfuse", "gpt"]
-featurePriority: 0
 relatedLinks:
-  - text: "OpenAI Agents SDK + Webfuse"
-    href: "/blog/give-your-openai-agent-real-browser-superpowers-with-webfuse"
-    description: "Build a programmatic browser agent with the OpenAI Agents SDK and Webfuse MCP."
-  - text: "A Gentle Introduction to AI Agents for the Web"
-    href: "/blog/a-gentle-introduction-to-ai-agents-for-the-web"
-    description: "What web AI agents are and how Webfuse enables them."
+  - title: "OpenAI Agents SDK + Webfuse"
+    url: "/blog/give-your-openai-agent-real-browser-superpowers-with-webfuse"
+  - title: "A Gentle Introduction to AI Agents for the Web"
+    url: "/blog/a-gentle-introduction-to-ai-agents-for-the-web"
 faqs:
   - question: "Do I need to write code to use this?"
     answer: "No. The GPT connects to Webfuse via MCP. You just create the GPT, add the MCP connector, and start chatting. No Python, no JavaScript, no terminal."
@@ -65,7 +62,7 @@ In ChatGPT, create a new GPT. Add an MCP connector pointing to:
 https://session-mcp.webfu.se/mcp
 ```
 
-Authenticate with your REST API key as a Bearer token. Add a system prompt that tells the GPT how to use the tools (snapshot first, then act, then verify).
+Authenticate with your REST API key (Token auth). Add a system prompt that tells the GPT how to use the tools (snapshot first, then act, then verify).
 
 ### Step 3: Use It
 

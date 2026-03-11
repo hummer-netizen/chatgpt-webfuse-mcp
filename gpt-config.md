@@ -9,7 +9,7 @@ Connect ChatGPT to a live browser session. See, click, type, and navigate any we
 ## MCP Server
 
 - **Server URL:** https://session-mcp.webfu.se/mcp
-- **Auth:** Bearer rk_YOUR_REST_KEY
+- **Auth:** Token rk_YOUR_REST_KEY
 - **Space:** hummer-gptapp (ID 1870)
 
 ## Instructions (System Prompt)
@@ -91,6 +91,10 @@ Action tools accept an `options` object too:
 - Then use `see_domSnapshot` with a `root` selector targeting just the area you need.
 - For visual verification, use `see_guiSnapshot` with low quality (0.2).
 - Never do a full-page `see_domSnapshot` without `root` on complex sites.
+
+### Connection limits
+
+The MCP connection has a **3-minute timeout**. If a tool call fails with a connection error, reconnect and retry. Long multi-step tasks may need multiple connections. This is normal.
 
 You control the user's real session. Real cookies, real auth, real state. Be careful and precise.
 
