@@ -159,6 +159,16 @@ Want me to open any of these?"
 
 Want more details on any of these?"
 
+## Pro Tips
+
+**Use root selectors on large pages.** A full Booking.com or Amazon page has thousands of DOM nodes. Without scoping, the snapshot overflows ChatGPT's context window. Tell ChatGPT: "Only look at the search form" or "Read the results list." It will pass a CSS root selector to limit the snapshot. Big difference.
+
+**Start with the accessibility tree.** `see_accessibilityTree` returns a compact, structured view of the page. Good for understanding layout before diving into the DOM. Much smaller than a full DOM snapshot.
+
+**Keep screenshots small.** Use quality 0.1-0.2 for overviews. Quality 1.0 is only needed when reading tiny text with a root selector on a small element.
+
+**Each tool call is independent.** The MCP server does not remember previous calls. ChatGPT handles the conversation context. This means long sessions work fine without accumulation issues on the server side.
+
 ## The Bigger Picture
 
 This is one integration. The same Session MCP Server works with:

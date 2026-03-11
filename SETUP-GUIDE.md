@@ -17,7 +17,7 @@ You need: ChatGPT Business plan with admin access.
    - **Name:** Webfuse Browser Agent
    - **Description:** Connect ChatGPT to a live browser session via Webfuse. See, click, type, and navigate any website.
    - **MCP Server URL:** `https://session-mcp.webfu.se/mcp`
-   - **Authentication:** Bearer Token
+   - **Authentication:** Token-based auth
    - **Token:** `rk_YOUR_REST_KEY`
 3. Click **Create**
 
