@@ -2,8 +2,6 @@
 
 A custom ChatGPT GPT that connects to a live browser session via [Webfuse](https://webfuse.com) and the [Session MCP Server](https://dev.webfu.se/session-mcp-server/). ChatGPT can see, click, type, and navigate any website you're browsing.
 
-No backend server. No Python code. Just ChatGPT + Webfuse.
-
 ```
 ┌──────────────────────┐
 │      ChatGPT         │
@@ -13,7 +11,8 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 ┌──────────▼───────────┐
 │  Webfuse Session     │
 │  MCP Server          │
-│  session-mcp.HOST/   │
+│  session-mcp.webfu.  │
+│  se/mcp              │
 └──────────┬───────────┘
            │
 ┌──────────▼───────────┐
@@ -22,65 +21,77 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 └──────────────────────┘
 ```
 
+No backend server. No Python code. Just ChatGPT + Webfuse.
+
 ## Prerequisites
 
-- ChatGPT Business, Enterprise, or Edu plan (MCP connector access)
+- ChatGPT Business, Enterprise, or Edu account (MCP connector access)
 - A [Webfuse](https://webfuse.com) account with a Space
 - The Automation App installed on your Space
 
-## Quick Start
+## Setup
 
-1. **Create a Webfuse Space** at [Webfuse Studio](https://webfuse.com/studio/). Generate a REST API key and install the Automation App.
-2. **Create the GPT** in ChatGPT: add an MCP connector pointing to `https://session-mcp.webfu.se/mcp`, authenticate with your REST key as a Bearer token.
-3. **Copy the system prompt** from [`gpt-config.md`](gpt-config.md) into the GPT instructions.
-4. **Open a Webfuse session**, navigate to any site, copy the session ID from the URL.
-5. **Chat with the GPT**: give it your session ID and tell it what to do.
+See [SETUP-GUIDE.md](SETUP-GUIDE.md) for detailed step-by-step instructions.
 
-For a detailed walkthrough with screenshots, see [`SETUP-GUIDE.md`](SETUP-GUIDE.md).
+Quick version:
+
+1. Create a Webfuse Space with the Automation App installed
+2. Generate a REST API key (`rk_...`)
+3. In ChatGPT, create an App with MCP connector pointed at `https://session-mcp.webfu.se/mcp`
+4. Set Token auth with your REST key
+5. Copy the system prompt from [gpt-config.md](gpt-config.md)
 
 ## Example Conversations
 
-### Hotel Search on Booking.com
+### Hotel search on Booking.com
 
-> **You:** My session ID is sGpUNaFXihCSxCUfb3zezgaCw. I'm on booking.com. Find hotels in Amsterdam for March 20-22.
+> **You:** My session ID is sGpUNaFXihCSxCUfb3zezgaCw. I'm on booking.com. Find me a hotel in Amsterdam for March 20-22, under 150 euros.
 >
-> **GPT:** *takes a DOM snapshot, finds the search form*
-> I can see the Booking.com homepage. Let me fill in the search.
+> **ChatGPT:** *takes a DOM snapshot of the page*
+> I can see the Booking.com homepage with the search form. Let me fill it in.
 >
-> **GPT:** *clicks the destination field, types "Amsterdam", selects the suggestion, sets dates, clicks Search*
-> Found results. Here are the top options under 150 euros: ...
+> *clicks the destination field, types "Amsterdam", selects the suggestion*
+> *sets check-in and check-out dates*
+> *clicks Search*
 >
-> **You:** Open the second one.
+> Found 12 hotels under 150 euros. Here are the top 3:
+> 1. Hotel V Nesplein -- 128 euros/night, 8.9 rating
+> 2. The Hoxton -- 142 euros/night, 9.1 rating
+> 3. Conscious Hotel Museum Square -- 119 euros/night, 8.5 rating
 >
-> **GPT:** *clicks the listing, takes another snapshot*
-> This hotel has free cancellation until March 18. Want me to book it?
+> Want me to open any of these?
 
-### Form Filling
+ChatGPT reads the live page via `see_domSnapshot`, fills the form with `act_click` and `act_type`, then extracts results from the updated page.
 
-> **You:** I'm on a job application page. Fill it with: Jane Doe, jane@example.com, +31612345678.
->
-> **GPT:** *snapshots the page, identifies form fields*
-> I see fields for Name, Email, Phone, and Cover Letter. Filling in what I have.
->
-> **GPT:** *clicks and types into each field*
-> Done. Name, email, and phone filled in. Cover letter is empty. Want me to write one?
-
-### Data Extraction
+### Data extraction from Amazon
 
 > **You:** Go to amazon.com/bestsellers and list the top 5 in Electronics.
 >
-> **GPT:** *navigates to the URL, clicks Electronics, snapshots the results*
+> **ChatGPT:** *navigates to the URL, takes a snapshot scoped to the Electronics section*
 > Top 5 Electronics Best Sellers:
-> 1. Apple AirPods Pro (2nd Gen) - $189
-> 2. Fire TV Stick 4K - $29
-> ...
+> 1. Apple AirPods Pro (2nd Gen) -- $189
+> 2. Amazon Fire TV Stick 4K -- $29
+> 3. Anker USB-C Charger -- $15
+> 4. Apple AirTag (4 pack) -- $79
+> 5. Samsung 128GB microSD -- $12
+
+ChatGPT uses `navigate` to open the page, then `see_domSnapshot` with a `root` CSS selector to read only the relevant section (avoiding context overflow on large pages).
+
+### Form filling
+
+> **You:** I'm on a job application page. Fill it in: John Doe, john@example.com, +31612345678.
+>
+> **ChatGPT:** *snapshots the form, identifies fields, fills each one*
+> Done. Name, email, and phone are filled in. The Cover Letter field is empty and there's a Resume upload button. Want me to write a cover letter?
+
+ChatGPT reads the form structure first, then uses `act_click` + `act_type` on each field.
 
 ## MCP Tools Available
 
 | Tool | What it does |
 |------|--------------|
 | `navigate` | Go to a URL |
-| `see_domSnapshot` | Read page DOM structure (use `webfuseIDs: true` and `root` selector) |
+| `see_domSnapshot` | Read page DOM (use `webfuseIDs` and `root` options) |
 | `see_accessibilityTree` | Read accessibility tree (compact page overview) |
 | `see_guiSnapshot` | Take a visual screenshot |
 | `see_textSelection` | Read currently selected text |
@@ -91,39 +102,31 @@ For a detailed walkthrough with screenshots, see [`SETUP-GUIDE.md`](SETUP-GUIDE.
 | `act_select` | Pick a dropdown option |
 | `act_mouseMove` | Hover over an element |
 | `act_textSelect` | Select text on the page |
-| `wait` | Pause briefly |
+| `wait` | Pause briefly (use sparingly) |
 
-All tools require `session_id`. Targeting: CSS selectors > Webfuse IDs (`wf-42`) > coordinates (`[x, y]`).
+All tools require a `session_id` parameter.
 
-## Screenshots
+## Key Advantages
 
-*Screenshots show the key steps of using this integration:*
+- **Zero code** -- no backend, no scripts, no deployment
+- **Real browser session** -- your cookies, your auth, your state
+- **Any website** -- Webfuse proxies everything, no per-site setup
+- **Same MCP tools** -- works identically with OpenAI Agents SDK, Claude, Cursor, etc.
+- **13 tools** covering navigation, observation, and interaction
 
-1. **Webfuse Studio** - Creating a Space and generating a REST API key
-   <!-- screenshot: webfuse-studio-space-setup.png -->
-2. **ChatGPT GPT Editor** - Adding the MCP connector with the Webfuse endpoint
-   <!-- screenshot: chatgpt-mcp-connector-setup.png -->
-3. **Browsing Session** - A Webfuse session with booking.com loaded, session ID visible in URL
-   <!-- screenshot: webfuse-session-booking.png -->
-4. **ChatGPT in Action** - The GPT calling MCP tools to search for hotels, with tool calls visible
-   <!-- screenshot: chatgpt-hotel-search-action.png -->
-5. **Result** - Search results appearing in the browser after the GPT filled and submitted the form
-   <!-- screenshot: browser-search-results.png -->
+## Limits
 
-## How It Differs from ChatGPT's Built-in Browsing
-
-| | ChatGPT Browsing | Webfuse + MCP |
-|---|---|---|
-| Runs in | Sandboxed environment | Your real browser session |
-| Auth/cookies | None (public pages only) | Your real session state |
-| Interaction | Read-only | Full: click, type, scroll, navigate |
-| Login walls | Cannot pass | Works (your session is already logged in) |
-| You see it happen | No | Yes, in your browser tab |
+| Limit | Value |
+|-------|-------|
+| MCP connection duration | 3 min (auto-reconnects) |
+| Tool call timeout | 15s |
+| Tool call input | 16 KiB |
+| Tool call response | 10 MiB |
 
 ## Links
 
+- [Setup Guide](SETUP-GUIDE.md)
+- [GPT Configuration](gpt-config.md)
 - [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
-- [ChatGPT MCP Connectors](https://platform.openai.com/docs/guides/tools-remote-mcp)
+- [OpenAI Agents SDK version](https://github.com/hummer-netizen/extension-openai-agents-mcp) (for programmatic agents)
 - [Webfuse](https://webfuse.com)
-- [Blog Post: Turn ChatGPT Into a Browser Agent](https://webfuse.com/blog/turn-chatgpt-into-a-browser-agent-with-webfuse)
-- [Related: OpenAI Agents SDK + Webfuse MCP](https://github.com/hummer-netizen/extension-openai-agents-mcp)
