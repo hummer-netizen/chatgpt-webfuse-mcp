@@ -49,12 +49,7 @@ The setup is surprisingly simple. Three components:
 
 No middleware. No backend server. ChatGPT calls the MCP tools directly.
 
-::ArticleSignupCta
----
-heading: "Give ChatGPT real browser superpowers"
-subtitle: "Webfuse connects any AI agent to live web sessions via MCP. No extensions, no credential sharing. Try it free."
----
-::
+<ArticleSignupCta />
 
 ## Setting It Up
 
