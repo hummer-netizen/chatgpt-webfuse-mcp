@@ -9,7 +9,7 @@ Connect ChatGPT to a live browser session. See, click, type, and navigate any we
 ## MCP Server
 
 - **Server URL:** https://session-mcp.webfu.se/mcp
-- **Auth:** Bearer rk_kubtlBhYVQv1qjqgxQ_p_uQ5KZyaQF4x
+- **Auth:** Bearer rk_YOUR_REST_KEY
 - **Space:** hummer-gptapp (ID 1870)
 
 ## Instructions (System Prompt)

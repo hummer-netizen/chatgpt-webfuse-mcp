@@ -61,14 +61,17 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 |------|--------------|
 | `navigate` | Go to a URL |
 | `see_domSnapshot` | Read page structure |
-| `see_a11ySnapshot` | Read accessibility tree |
+| `see_accessibilityTree` | Read accessibility tree |
 | `see_guiSnapshot` | Take a screenshot |
 | `act_click` | Click an element |
 | `act_type` | Type into a field |
-| `act_pressKey` | Press a key |
+| `act_keyPress` | Press a key |
 | `act_scroll` | Scroll the page |
 | `act_select` | Pick a dropdown option |
-| `act_hover` | Hover over an element |
+| `act_mouseMove` | Hover over an element |
+| `act_textSelect` | Select text on the page |
+| `see_textSelection` | Read currently selected text |
+| `wait` | Pause briefly (use sparingly) |
 
 ## Links
 

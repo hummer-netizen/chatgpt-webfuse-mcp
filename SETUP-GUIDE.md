@@ -18,7 +18,7 @@ You need: ChatGPT Business plan with admin access.
    - **Description:** Connect ChatGPT to a live browser session via Webfuse. See, click, type, and navigate any website.
    - **MCP Server URL:** `https://session-mcp.webfu.se/mcp`
    - **Authentication:** Bearer Token
-   - **Token:** `rk_kubtlBhYVQv1qjqgxQ_p_uQ5KZyaQF4x`
+   - **Token:** `rk_YOUR_REST_KEY`
 3. Click **Create**
 
 The app appears as a draft with a "Dev" label.
