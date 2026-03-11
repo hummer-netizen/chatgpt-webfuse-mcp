@@ -24,93 +24,87 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 
 ## Prerequisites
 
-- ChatGPT Plus or Enterprise account (GPT access)
+- ChatGPT Business, Enterprise, or Edu plan (MCP connector support)
 - A [Webfuse](https://webfuse.com) account with a Space
 - The Automation App installed on your Space
 
 ## Setup
 
-### 1. Create a Webfuse Space
+See [SETUP-GUIDE.md](SETUP-GUIDE.md) for detailed step-by-step instructions.
 
-1. Go to [Webfuse Studio](https://webfuse.com/studio/)
-2. Create a new Space
-3. Generate a REST API key (Settings > API Keys)
-4. Install the Automation App (Session > Apps tab)
-5. Restart the session
+Quick version:
 
-### 2. Create the GPT
-
-1. Go to [ChatGPT GPT Editor](https://chatgpt.com/gpts/editor)
-2. Name: "Webfuse Browser Agent"
-3. Description: "Connect ChatGPT to a live browser session via Webfuse"
-4. Copy the system prompt from `gpt-config.md`
-5. Add MCP connector:
-   - Server URL: `https://session-mcp.webfu.se/mcp`
-   - Auth: Bearer token with your REST API key
-
-### 3. Use It
-
-1. Open your Webfuse Space URL in a browser tab
-2. Open ChatGPT and select the Webfuse Browser Agent GPT
-3. Give it your session ID (from the URL)
-4. Tell it what to do: "Open booking.com and find hotels in Amsterdam"
+1. Create a Webfuse Space, generate a REST API key, install the Automation App
+2. In ChatGPT workspace settings, enable developer mode
+3. Create an App with MCP Server URL: `https://session-mcp.webfu.se/mcp`
+4. Authenticate with your REST API key as a Bearer token
+5. Copy the system prompt from [gpt-config.md](gpt-config.md)
 
 ## MCP Tools Available
 
+The Session MCP Server provides 13 tools:
+
+### Observation
 | Tool | What it does |
 |------|--------------|
-| `navigate` | Go to a URL |
-| `see_domSnapshot` | Read page structure |
-| `see_accessibilityTree` | Read accessibility tree |
-| `see_guiSnapshot` | Take a screenshot |
+| `see_domSnapshot` | Read page DOM structure (use webfuseIDs=true for targeting) |
+| `see_accessibilityTree` | Read the accessibility tree (compact page overview) |
+| `see_guiSnapshot` | Take a visual screenshot |
+| `see_textSelection` | Read currently selected text |
+
+### Action
+| Tool | What it does |
+|------|--------------|
 | `act_click` | Click an element |
-| `act_type` | Type into a field |
-| `act_keyPress` | Press a key |
-| `act_scroll` | Scroll the page |
-| `act_select` | Pick a dropdown option |
+| `act_type` | Type into an input field |
+| `act_keyPress` | Press a keyboard key (Enter, Tab, Escape, etc.) |
+| `act_scroll` | Scroll the page or a container |
+| `act_select` | Pick a dropdown option (by value) |
 | `act_mouseMove` | Hover over an element |
 | `act_textSelect` | Select text on the page |
-| `see_textSelection` | Read currently selected text |
+| `navigate` | Go to a URL |
 | `wait` | Pause briefly (use sparingly) |
 
-## Limitations
-
-| Limit | Detail |
-|-------|--------|
-| MCP connection | 3-minute timeout. ChatGPT reconnects automatically on next tool call. |
-| ChatGPT plan | Requires Business, Enterprise, or Edu plan (custom GPTs with MCP connectors need admin access). |
-| Tool call input | 16 KiB max per tool call |
-| Tool call response | 10 MiB max per tool call |
-| Session timeout | Webfuse sessions expire after inactivity. Start a new one and share the new session ID. |
-| No file upload | The MCP tools can't upload files to forms. You'll need to do file uploads manually. |
-
-## Links
-
-- [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
-- [OpenAI GPT Actions](https://platform.openai.com/docs/actions)
-- [Webfuse](https://webfuse.com)
+All tools require a `session_id` parameter.
 
 ## Example Conversation
 
-```
-You: My session ID is sGpUNaFXihCSxCUfb3zezgaCw.
-     I'm on booking.com. Find hotels in Amsterdam, March 20-22.
+**You:** My session ID is sGpUNaFXihCSxCUfb3zezgaCw. I'm on booking.com. Find me a hotel in Amsterdam for next weekend.
 
-GPT: [calls see_domSnapshot] I can see the Booking.com homepage.
-     Let me fill in the search form.
+**ChatGPT:** *calls `see_domSnapshot` with webfuseIDs=true*
+I can see the Booking.com homepage with a search form. Let me fill it in.
 
-GPT: [calls act_click, act_type] Typed "Amsterdam", selected from
-     dropdown, set dates. Clicking Search.
+**ChatGPT:** *calls `act_click` on destination field, then `act_type` with "Amsterdam"*
+Typed Amsterdam. Dropdown appeared. Selecting "Amsterdam, Netherlands."
 
-GPT: [calls act_click, see_domSnapshot] Found 12 results. Top 3:
-     1. Hotel V Nesplein -- 128 EUR, 8.9 rating
-     2. The Hoxton -- 142 EUR, 9.1 rating
-     3. Conscious Hotel -- 119 EUR, 8.5 rating
+**ChatGPT:** *calls `act_click` on suggestion, fills dates, clicks Search*
+Found 12 hotels under your budget. Here are the top 3...
 
-You: Open The Hoxton.
+## Targeting Elements
 
-GPT: [calls act_click, see_domSnapshot] Free cancellation until
-     March 18. Cosy room from 142 EUR. Want me to book it?
-```
+The `target` parameter accepts:
+- **CSS selectors** (preferred): `#search-btn`, `input[name="q"]`
+- **Webfuse IDs**: `wf-42` (from snapshots with webfuseIDs option)
+- **Coordinates**: `[350, 200]` (x, y pixels, last resort)
 
-The GPT picks the right MCP tools for each step. You see every action happen live in your browser tab.
+## Tips
+
+- **Use root selectors on large pages.** A full Amazon or Booking.com page has thousands of DOM nodes. Scope snapshots with a CSS root selector to avoid overflowing ChatGPT's context window.
+- **Start with `see_accessibilityTree`.** It returns a compact view, much smaller than the full DOM. Good for understanding page layout before diving in.
+- **Keep screenshots small.** Use quality 0.1-0.2 for overviews. Full quality only for reading tiny text on small elements.
+
+## Limits
+
+| Limit | Value |
+|-------|-------|
+| Tool call timeout | 15s |
+| MCP connection duration | 3 min (reconnects automatically) |
+| Tool call input | 16 KiB |
+| Tool call response | 10 MiB |
+
+## Links
+
+- [Setup Guide](SETUP-GUIDE.md)
+- [GPT Config / System Prompt](gpt-config.md)
+- [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
+- [Webfuse](https://webfuse.com)

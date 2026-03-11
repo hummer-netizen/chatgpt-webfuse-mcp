@@ -101,7 +101,7 @@ Anything a human can do on a web page:
 - **Extract**: "Read the pricing table and compare the plans"
 - **Multi-step**: "Log into my account, go to order history, and find my last purchase"
 
-The MCP Server exposes 11 tools covering navigation, reading, and interaction. ChatGPT picks the right ones based on your request.
+The MCP Server exposes 13 tools covering navigation, reading, and interaction. ChatGPT picks the right ones based on your request.
 
 
 ## Conversation Flow: Hotel Search
@@ -121,9 +121,9 @@ Here's what a real conversation looks like:
 
 **ChatGPT:** *calls `act_click` on the search button, then `see_domSnapshot` on results*
 "Found 12 hotels under 150 euros. Here are the top 3:
-1. Hotel V Nesplein -- 128 euros/night, 8.9 rating
-2. The Hoxton -- 142 euros/night, 9.1 rating
-3. Conscious Hotel Museum Square -- 119 euros/night, 8.5 rating
+1. Hotel V Nesplein: 128 euros/night, 8.9 rating
+2. The Hoxton: 142 euros/night, 9.1 rating
+3. Conscious Hotel Museum Square: 119 euros/night, 8.5 rating
 
 Want me to open any of these?"
 
@@ -151,11 +151,11 @@ Want me to open any of these?"
 
 **ChatGPT:** *calls `act_click`, then `see_domSnapshot`*
 "Top 5 Electronics Best Sellers:
-1. Apple AirPods Pro (2nd Gen) -- $189
-2. Amazon Fire TV Stick 4K -- $29
-3. Anker USB-C Charger -- $15
-4. Apple AirTag (4 pack) -- $79
-5. Samsung 128GB microSD -- $12
+1. Apple AirPods Pro (2nd Gen): $189
+2. Amazon Fire TV Stick 4K: $29
+3. Anker USB-C Charger: $15
+4. Apple AirTag (4 pack): $79
+5. Samsung 128GB microSD: $12
 
 Want more details on any of these?"
 
