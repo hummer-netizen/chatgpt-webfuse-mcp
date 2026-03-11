@@ -75,3 +75,28 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 - [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
 - [OpenAI GPT Actions](https://platform.openai.com/docs/actions)
 - [Webfuse](https://webfuse.com)
+
+## Example Conversation
+
+```
+You: My session ID is sGpUNaFXihCSxCUfb3zezgaCw.
+     I'm on booking.com. Find hotels in Amsterdam, March 20-22.
+
+GPT: [calls see_domSnapshot] I can see the Booking.com homepage.
+     Let me fill in the search form.
+
+GPT: [calls act_click, act_type] Typed "Amsterdam", selected from
+     dropdown, set dates. Clicking Search.
+
+GPT: [calls act_click, see_domSnapshot] Found 12 results. Top 3:
+     1. Hotel V Nesplein -- 128 EUR, 8.9 rating
+     2. The Hoxton -- 142 EUR, 9.1 rating
+     3. Conscious Hotel -- 119 EUR, 8.5 rating
+
+You: Open The Hoxton.
+
+GPT: [calls act_click, see_domSnapshot] Free cancellation until
+     March 18. Cosy room from 142 EUR. Want me to book it?
+```
+
+The GPT picks the right MCP tools for each step. You see every action happen live in your browser tab.

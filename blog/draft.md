@@ -103,6 +103,62 @@ Anything a human can do on a web page:
 
 The MCP Server exposes 11 tools covering navigation, reading, and interaction. ChatGPT picks the right ones based on your request.
 
+
+## Conversation Flow: Hotel Search
+
+Here's what a real conversation looks like:
+
+**You:** "My session ID is sGpUNaFXihCSxCUfb3zezgaCw. I'm on booking.com. Find me a hotel in Amsterdam for March 20-22, under 150 euros."
+
+**ChatGPT:** *calls `see_domSnapshot` with webfuseIDs=true*
+"I can see the Booking.com homepage. Let me fill in the search form."
+
+**ChatGPT:** *calls `act_click` on the destination field, then `act_type` with "Amsterdam"*
+"Typed Amsterdam. I see a dropdown with suggestions. Selecting 'Amsterdam, Netherlands'."
+
+**ChatGPT:** *calls `act_click` on the suggestion, then fills dates via `act_click` + `act_type`*
+"Dates set. Clicking Search."
+
+**ChatGPT:** *calls `act_click` on the search button, then `see_domSnapshot` on results*
+"Found 12 hotels under 150 euros. Here are the top 3:
+1. Hotel V Nesplein -- 128 euros/night, 8.9 rating
+2. The Hoxton -- 142 euros/night, 9.1 rating
+3. Conscious Hotel Museum Square -- 119 euros/night, 8.5 rating
+
+Want me to open any of these?"
+
+**You:** "Open The Hoxton."
+
+**ChatGPT:** *calls `act_click` on the listing*
+"Opened The Hoxton. It has free cancellation until March 18. Room options start at 142 euros for a Cosy room. Want me to book it?"
+
+## Conversation Flow: Form Filling
+
+**You:** "I'm on a job application page. Fill it in with my details: John Doe, john@example.com, +31612345678."
+
+**ChatGPT:** *calls `see_domSnapshot`*
+"I see the application form. Fields: Name, Email, Phone, Cover Letter, Resume upload. Let me fill in what I have."
+
+**ChatGPT:** *calls `act_click` + `act_type` for each field*
+"Done. Name, email, and phone are filled in. The Cover Letter field is empty and there's a Resume upload button. Want me to write a cover letter or should you handle those?"
+
+## Conversation Flow: Data Extraction
+
+**You:** "Go to amazon.com/bestsellers and list the top 5 items in Electronics."
+
+**ChatGPT:** *calls `navigate` to the URL, then `see_domSnapshot`*
+"I'm on the Best Sellers page. Clicking on Electronics category."
+
+**ChatGPT:** *calls `act_click`, then `see_domSnapshot`*
+"Top 5 Electronics Best Sellers:
+1. Apple AirPods Pro (2nd Gen) -- $189
+2. Amazon Fire TV Stick 4K -- $29
+3. Anker USB-C Charger -- $15
+4. Apple AirTag (4 pack) -- $79
+5. Samsung 128GB microSD -- $12
+
+Want more details on any of these?"
+
 ## The Bigger Picture
 
 This is one integration. The same Session MCP Server works with:
