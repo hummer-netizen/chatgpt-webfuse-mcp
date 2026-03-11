@@ -73,6 +73,17 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 | `see_textSelection` | Read currently selected text |
 | `wait` | Pause briefly (use sparingly) |
 
+## Limitations
+
+| Limit | Detail |
+|-------|--------|
+| MCP connection | 3-minute timeout. ChatGPT reconnects automatically on next tool call. |
+| ChatGPT plan | Requires Business, Enterprise, or Edu plan (custom GPTs with MCP connectors need admin access). |
+| Tool call input | 16 KiB max per tool call |
+| Tool call response | 10 MiB max per tool call |
+| Session timeout | Webfuse sessions expire after inactivity. Start a new one and share the new session ID. |
+| No file upload | The MCP tools can't upload files to forms. You'll need to do file uploads manually. |
+
 ## Links
 
 - [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
