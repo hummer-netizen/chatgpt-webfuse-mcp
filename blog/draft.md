@@ -161,6 +161,18 @@ Want more details on any of these?"
 
 **Each tool call is independent.** The MCP server does not remember previous calls. ChatGPT handles the conversation context. This means long sessions work fine without accumulation issues on the server side.
 
+## Limitations
+
+A few things to know before going all-in:
+
+- **ChatGPT plan requirement.** MCP connectors need ChatGPT Team, Business, Enterprise, or Edu. Free and Plus plans don't support custom MCP tools yet.
+- **3-minute connection window.** The Webfuse MCP connection times out after 3 minutes. ChatGPT reconnects automatically on the next tool call, but long pauses between messages may cause a brief delay.
+- **Large pages can overflow context.** A full DOM snapshot of a complex page (Amazon, Booking.com) can be huge. Use root selectors to scope snapshots, or start with the accessibility tree. Without scoping, you'll hit context limits fast.
+- **No file uploads via MCP.** The MCP tools handle navigation, reading, and form input. File uploads (resume, document) still need the user to click the upload button manually.
+- **Session ID is manual.** The user currently needs to copy their session ID from the URL and paste it into ChatGPT. We're working on making this automatic.
+
+None of these are showstoppers. Just things to plan around.
+
 ## The Bigger Picture
 
 This is one integration. The same Session MCP Server works with:

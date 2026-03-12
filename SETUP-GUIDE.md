@@ -1,13 +1,13 @@
 # ChatGPT + Webfuse: Setup Guide (5 minutes)
 
-You need: ChatGPT Business plan with admin access.
+You need: ChatGPT Team, Business, Enterprise, or Edu plan with admin access.
 
 ## Step 1: Enable Developer Mode
 
 1. Go to https://chatgpt.com/admin/ca (Workspace Settings)
 2. Navigate to **Permissions & Roles**
 3. Enable **Developer mode / Create custom MCP connectors**
-4. (Business plan: only admins/owners can do this)
+4. (Team/Business/Enterprise/Edu: only admins/owners can enable this)
 
 ## Step 2: Create the App
 
