@@ -98,6 +98,14 @@ The MCP connection has a **3-minute timeout**. If a tool call fails with a conne
 
 You control the user's real session. Real cookies, real auth, real state. Be careful and precise.
 
+### Known limitations
+
+- **3-minute MCP timeout.** The connection drops after 3 minutes of inactivity. If a tool call fails with a connection error, just retry. The next call reconnects automatically.
+- **Large pages overflow context.** A full DOM snapshot of Amazon or Booking.com can be 200K+ tokens. Always use a `root` selector. If you still hit limits, switch to `see_accessibilityTree`.
+- **No file uploads.** You can fill text fields and click buttons, but you cannot attach files to upload inputs. Tell the user to handle file uploads manually.
+- **One session at a time.** Each conversation works with one session ID. If the user switches sessions, ask for the new ID.
+- **Dynamic content.** SPAs and pages with heavy JS may change between your snapshot and your action. If a click misses, re-snapshot and try again.
+
 ## Conversation Starters
 
 1. "Open booking.com and find me a hotel in Amsterdam for next weekend"
