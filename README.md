@@ -132,3 +132,13 @@ The Session MCP Server is not ChatGPT-specific. The same endpoint works with:
 - [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
 - [OpenAI ChatGPT MCP support](https://platform.openai.com/docs/guides/tools-mcp)
 - [Webfuse](https://webfuse.com)
+
+## Other Integrations
+
+Webfuse MCP works with any AI framework. See the other demos:
+
+- **[OpenAI Agents SDK](https://github.com/hummer-netizen/extension-openai-agents-mcp)** — Build a custom agent with the OpenAI Agents SDK
+- **[Claude Desktop / Cursor / VS Code](https://github.com/hummer-netizen/extension-claude-mcp)** — Zero-code setup — just a config file
+- **[Vercel AI SDK](https://github.com/hummer-netizen/extension-vercel-ai-mcp)** — TypeScript browsing assistant for Next.js
+- **[LangChain / LangGraph](https://github.com/hummer-netizen/extension-langchain-mcp)** — Python research agent with multi-page reasoning
+- **[LiveKit Voice Agent](https://github.com/hummer-netizen/extension-livekit-mcp)** — Voice-controlled browser agent with WebRTC
