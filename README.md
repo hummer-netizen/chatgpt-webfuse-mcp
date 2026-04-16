@@ -122,7 +122,7 @@ See the [blog post](blog/draft.md) for detailed conversation flow examples.
 
 The Session MCP Server is not ChatGPT-specific. The same endpoint works with:
 
-- [OpenAI Agents SDK](https://github.com/hummer-netizen/extension-openai-agents-mcp) (Python backend)
+- [OpenAI Agents SDK](https://github.com/webfuse-com/extension-openai-agents-mcp) (Python backend)
 - ElevenLabs (voice agents)
 - Claude Desktop / Cursor / VS Code
 - Any MCP-compatible client
@@ -133,12 +133,19 @@ The Session MCP Server is not ChatGPT-specific. The same endpoint works with:
 - [OpenAI ChatGPT MCP support](https://platform.openai.com/docs/guides/tools-mcp)
 - [Webfuse](https://webfuse.com)
 
-## Other Integrations
 
-Webfuse MCP works with any AI framework. See the other demos:
+## Other Webfuse Integrations
 
-- **[OpenAI Agents SDK](https://github.com/hummer-netizen/extension-openai-agents-mcp)** — Build a custom agent with the OpenAI Agents SDK
-- **[Claude Desktop / Cursor / VS Code](https://github.com/hummer-netizen/extension-claude-mcp)** — Zero-code setup — just a config file
-- **[Vercel AI SDK](https://github.com/hummer-netizen/extension-vercel-ai-mcp)** — TypeScript browsing assistant for Next.js
-- **[LangChain / LangGraph](https://github.com/hummer-netizen/extension-langchain-mcp)** — Python research agent with multi-page reasoning
-- **[LiveKit Voice Agent](https://github.com/hummer-netizen/extension-livekit-mcp)** — Voice-controlled browser agent with WebRTC
+Webfuse MCP works with any AI framework:
+
+- **[OpenAI Agents SDK](https://github.com/webfuse-com/extension-openai-agents-mcp)** - Python agent with browser control
+- **[Claude Desktop / Cursor / VS Code](https://github.com/webfuse-com/extension-claude-mcp)** - Zero-code MCP config
+- **[LangChain / LangGraph](https://github.com/webfuse-com/extension-langchain-mcp)** - Multi-page research agent
+- **[Vercel AI SDK](https://github.com/webfuse-com/extension-vercel-ai-mcp)** - Next.js browsing assistant
+- **[LiveKit Voice Agent](https://github.com/webfuse-com/extension-livekit-mcp)** - Voice-controlled browser
+- **[ChatGPT GPT](https://github.com/webfuse-com/chatgpt-webfuse-mcp)** - Custom GPT with browser tools
+- **[WebMCP Demo](https://github.com/webfuse-com/webfuse-webmcp-demo)** - Semantic tools on any website
+
+## License
+
+MIT
