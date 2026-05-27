@@ -1,27 +1,33 @@
-# ChatGPT GPT: Webfuse Browser Agent
+# ChatGPT + Webfuse MCP
 
-A custom ChatGPT GPT that connects to a live browser session via [Webfuse](https://webfuse.com) and the [Session MCP Server](https://dev.webfu.se/session-mcp-server/). ChatGPT can see, click, type, and navigate any website you're browsing.
+A custom ChatGPT GPT that connects to a live browser session via [Webfuse Session MCP](https://dev.webfu.se/session-mcp-server/). ChatGPT can see, click, type, and navigate any website you're browsing. No backend server required.
+
+## What It Does
+
+Open a Webfuse session in your browser, paste the session ID into ChatGPT, and start giving instructions. ChatGPT uses 13 browser tools (via MCP) to read pages, fill forms, click links, and extract data. You watch it happen in your browser in real time.
+
+## Architecture
 
 ```
-┌──────────────────────┐
-│      ChatGPT         │
-│   (GPT App)          │
-└──────────┬───────────┘
-           │ MCP (hosted connector)
-┌──────────▼───────────┐
-│  Webfuse Session     │
-│  MCP Server          │
-│  session-mcp.webfu.  │
-│  se/mcp              │
-└──────────┬───────────┘
-           │
-┌──────────▼───────────┐
-│  Live browser        │
-│  session (any site)  │
-└──────────────────────┘
++----------------------+
+|      ChatGPT         |
+|   (Custom GPT)       |
++----------+-----------+
+           | MCP connector
++----------v-----------+
+|  Webfuse Session     |
+|  MCP Server          |
+|  session-mcp.webfu.  |
+|  se/mcp              |
++----------+-----------+
+           |
++----------v-----------+
+|  Your live browser   |
+|  session (any site)  |
++----------------------+
 ```
 
-No backend server. No Python code. Just ChatGPT + Webfuse.
+No backend server. No Python code. Just ChatGPT's MCP connector pointed at Webfuse.
 
 ## Prerequisites
 
@@ -32,119 +38,61 @@ No backend server. No Python code. Just ChatGPT + Webfuse.
 ## Quick Start
 
 1. Create a Webfuse Space and generate a REST API key (`rk_...`)
-2. Install the Automation App (Session > Apps tab > Automation)
+2. Install the Automation App (Space > Apps > Automation)
 3. In ChatGPT, create a custom App with an MCP connector (see [SETUP-GUIDE.md](SETUP-GUIDE.md))
 4. Open a Webfuse session, copy the session ID from the URL
 5. Tell ChatGPT: "My session ID is [paste]. Take a snapshot of this page."
 
 Full step-by-step: **[SETUP-GUIDE.md](SETUP-GUIDE.md)**
 
-## MCP Tools Available
+## Configuration
 
-All tools require `session_id` as a parameter.
+| Variable | Description | Where to get it |
+|----------|-------------|----------------|
+| Webfuse REST API key | Used in the MCP connector config | Webfuse dashboard > Space > API Keys |
+| MCP endpoint URL | `https://session-mcp.webfu.se/mcp` | Fixed, same for all users |
 
-### Observation
+No `.env` file needed. The API key goes directly into the ChatGPT MCP connector configuration.
 
-| Tool | What it does |
-|------|-------------|
-| `see_domSnapshot` | Read page DOM structure (use `webfuseIDs: true` for reliable targeting) |
-| `see_accessibilityTree` | Read the accessibility tree (compact page overview) |
-| `see_guiSnapshot` | Take a visual screenshot |
-| `see_textSelection` | Read currently selected text |
+## How It Works
 
-### Action
+ChatGPT gets all 13 Webfuse Session MCP tools:
 
-| Tool | What it does |
-|------|-------------|
-| `navigate` | Go to a URL |
-| `act_click` | Click an element |
-| `act_type` | Type into an input field |
-| `act_keyPress` | Press a keyboard key (Enter, Backspace, Tab, etc.) |
-| `act_scroll` | Scroll the page or a container |
-| `act_select` | Pick a dropdown option (by value) |
-| `act_mouseMove` | Hover over an element |
-| `act_textSelect` | Select text on the page |
-| `wait` | Pause briefly (use sparingly) |
+| Category | Tools |
+|----------|-------|
+| **See** | `see_domSnapshot`, `see_guiSnapshot`, `see_accessibilityTree`, `see_textSelection` |
+| **Act** | `act_click`, `act_type`, `act_keyPress`, `act_scroll`, `act_mouseMove`, `act_select`, `act_textSelect` |
+| **Navigate** | `navigate` |
+| **Wait** | `wait` |
 
-### Targeting
+All tools require `session_id` as a parameter. Target elements via CSS selectors, Webfuse IDs (`wf-42`), or coordinates `[x,y]`.
 
-Elements are targeted via the `target` parameter:
+**Tips:**
+- Scope snapshots on large pages using the `root` option with a CSS selector
+- Start with `see_accessibilityTree` for a compact page overview
+- Use quality 0.1 for text-only snapshots (compact and readable)
+- MCP connections time out after 3 minutes (ChatGPT reconnects automatically)
 
-- **CSS selector** (preferred): `#search-btn`, `input[name="q"]`
-- **Webfuse ID**: `wf-42` (from snapshots with `webfuseIDs: true`)
-- **Coordinates**: `[350, 200]` (x, y pixels, last resort)
+**Files:**
 
-## Example Conversations
-
-### Hotel search
-> **You:** "My session ID is abc123. I'm on booking.com. Find hotels in Amsterdam, March 20-22, under 150 euros."
->
-> ChatGPT snapshots the page, fills the search form, clicks search, and reads the results back to you with prices and ratings.
-
-### Form filling
-> **You:** "Fill in the contact form with: John Doe, john@example.com, +31612345678."
->
-> ChatGPT reads the form structure, fills each field, and asks about any remaining fields (file uploads, textareas).
-
-### Data extraction
-> **You:** "Go to amazon.com/bestsellers and list the top 5 in Electronics."
->
-> ChatGPT navigates, clicks the category, and returns a structured list.
-
-See the [blog post](blog/draft.md) for detailed conversation flow examples.
-
-## Tips
-
-- **Scope snapshots on large pages.** Use `root` option with a CSS selector to avoid overflowing context. A full Amazon page has thousands of nodes.
-- **Start with accessibility tree.** `see_accessibilityTree` is much smaller than a DOM snapshot. Good for understanding layout first.
-- **Keep screenshots small.** Quality 0.1-0.2 for overviews. Only use 1.0 with a scoped `root` selector.
-- **3-minute connection limit.** MCP connections time out after 3 minutes. ChatGPT reconnects automatically.
-
-## Limits
-
-| Limit | Value |
-|-------|-------|
-| Tool call timeout | 15s |
-| MCP connection duration | 3 min (auto-reconnect) |
-| Tool call input | 16 KiB |
-| Tool call response | 10 MiB |
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `gpt-config.md` | System prompt and GPT configuration (copy into ChatGPT) |
-| `SETUP-GUIDE.md` | Step-by-step setup instructions |
-| `blog/draft.md` | Blog post (Webfuse format) |
-| `README.md` | This file |
-
-## The Same MCP, Everywhere
-
-The Session MCP Server is not ChatGPT-specific. The same endpoint works with:
-
-- [OpenAI Agents SDK](https://github.com/webfuse-com/extension-openai-agents-mcp) (Python backend)
-- ElevenLabs (voice agents)
-- Claude Desktop / Cursor / VS Code
-- Any MCP-compatible client
+```
+gpt-config.md          System prompt and GPT configuration
+SETUP-GUIDE.md         Step-by-step setup instructions
+README.md              This file
+```
 
 ## Links
 
-- [Webfuse Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
-- [OpenAI ChatGPT MCP support](https://platform.openai.com/docs/guides/tools-mcp)
 - [Webfuse](https://webfuse.com)
-
+- [Session MCP Server docs](https://dev.webfu.se/session-mcp-server/)
+- [ChatGPT MCP support](https://platform.openai.com/docs/guides/tools-mcp)
 
 ## Other Webfuse Integrations
 
-Webfuse MCP works with any AI framework:
-
-- **[OpenAI Agents SDK](https://github.com/webfuse-com/extension-openai-agents-mcp)** - Python agent with browser control
-- **[Claude Desktop / Cursor / VS Code](https://github.com/webfuse-com/extension-claude-mcp)** - Zero-code MCP config
-- **[LangChain / LangGraph](https://github.com/webfuse-com/extension-langchain-mcp)** - Multi-page research agent
-- **[Vercel AI SDK](https://github.com/webfuse-com/extension-vercel-ai-mcp)** - Next.js browsing assistant
-- **[LiveKit Voice Agent](https://github.com/webfuse-com/extension-livekit-mcp)** - Voice-controlled browser
-- **[ChatGPT GPT](https://github.com/webfuse-com/chatgpt-webfuse-mcp)** - Custom GPT with browser tools
-- **[WebMCP Demo](https://github.com/webfuse-com/webfuse-webmcp-demo)** - Semantic tools on any website
+- [OpenAI Agents SDK](https://github.com/webfuse-com/extension-openai-agents-mcp) - Python agent with browser control
+- [LangChain / LangGraph](https://github.com/webfuse-com/extension-langchain-mcp) - Multi-page research agent
+- [Vercel AI SDK](https://github.com/webfuse-com/extension-vercel-ai-mcp) - Next.js browsing assistant
+- [LiveKit Voice Agent](https://github.com/webfuse-com/extension-livekit-mcp) - Voice-controlled browser
 
 ## License
 
