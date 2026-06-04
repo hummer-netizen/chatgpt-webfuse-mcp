@@ -8,23 +8,10 @@ Open a Webfuse session in your browser, paste the session ID into ChatGPT, and s
 
 ## Architecture
 
-```
-+----------------------+
-|      ChatGPT         |
-|   (Custom GPT)       |
-+----------+-----------+
-           | MCP connector
-+----------v-----------+
-|  Webfuse Session     |
-|  MCP Server          |
-|  session-mcp.webfu.  |
-|  se/mcp              |
-+----------+-----------+
-           |
-+----------v-----------+
-|  Your live browser   |
-|  session (any site)  |
-+----------------------+
+```mermaid
+flowchart TD
+    A[ChatGPT<br/>Custom GPT] -->|MCP connector| B[Webfuse Session MCP<br/>session-mcp.webfu.se/mcp]
+    B -->|13 browser tools| C[Your Live Browser<br/>Any website]
 ```
 
 No backend server. No Python code. Just ChatGPT's MCP connector pointed at Webfuse.
